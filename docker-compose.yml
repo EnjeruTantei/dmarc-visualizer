@@ -22,7 +22,7 @@ services:
       timeout: 10s
       retries: 3
     volumes:
-      ./data/elastic:/usr/share/elasticsearch/data
+      - ./data/elastic:/usr/share/elasticsearch/data
 
   grafana:
     restart: on-failure
