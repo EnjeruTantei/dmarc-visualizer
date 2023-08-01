@@ -1,21 +1,31 @@
-version: '3.5'
+version: '3.9'
 services:
   parsedmarc:
     build: ./parsedmarc/
     volumes:
-      - ./files:/input:ro
-      - ./output_files:/output
-    command: parsedmarc -c /parsedmarc.ini /input/*
+      - ./data/parsedmarc/files:/input:ro
+      - ./data/parsedmarc/output_files:/output
+    command: parsedmarc --debug -c /parsedmarc.ini /input/*
+    # to prevent rapid restarts of parsedmarc when elasticsearch requires some time to get started.
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy      
     restart: on-failure
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.5
     environment:
       - discovery.type=single-node
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      ./data/elastic:/usr/share/elasticsearch/data
 
   grafana:
+    restart: on-failure
     build: ./grafana/
     ports:
       - 3000:3000
