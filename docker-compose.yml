@@ -5,7 +5,7 @@ services:
     volumes:
       - ./data/parsedmarc/files:/input:ro
       - ./data/parsedmarc/output_files:/output
-    command: /bin/sh -c "echo Hello World; parsedmarc --debug -c /parsedmarc.ini /input/*; sleep 60"
+    command: /bin/sh -c "echo Hello World; sleep 60"
     depends_on:
       elasticsearch:
         condition: service_healthy      
