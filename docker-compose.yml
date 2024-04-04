@@ -5,7 +5,6 @@ services:
     volumes:
       - ./data/parsedmarc/files:/input:ro
       - ./data/parsedmarc/output_files:/output
-      - ./parsedmarc/parsedmarc.ini:/parsedmarc.ini
     command: parsedmarc --debug -c /parsedmarc.ini /input/*
     depends_on:
       elasticsearch:
